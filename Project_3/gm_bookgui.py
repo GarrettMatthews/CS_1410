@@ -1,6 +1,6 @@
 from breezypythongui import EasyFrame
 from breezypythongui import EasyDialog
-import tkinter
+
 
 
 class BookRecommendation(EasyFrame):
@@ -15,9 +15,11 @@ class BookRecommendation(EasyFrame):
                                           command = self.addBook)
         self.rtbkButton = self.addButton(text = "Rate Book", row = 1, column = 0, columnspan = 2,
                                          command = self.rateBook)
-        self.rmvrdrButton = self.addButton(text = "Remove Reader", row = 1, column = 3, columnspan = 2)
-        self.rcmndButton = self.addButton(text = "Recommend", row = 2, column = 0, columnspan = 2)
-        self.rptButton = self.addButton(text = "Report", row =2, column = 3, columnspan = 2)
+        self.rmvrdrButton = self.addButton(text = "Remove Reader", row = 1, column = 3, columnspan = 2,
+                                           command= self.removeReader)
+        self.rcmndButton = self.addButton(text = "Recommend", row = 2, column = 0, columnspan = 2,
+                                          command = self.recommend)
+        self.rptButton = self.addButton(text = "Report", row =2, column = 3, columnspan = 2, command = self.report)
 
 
     def addRead(self):
@@ -25,30 +27,62 @@ class BookRecommendation(EasyFrame):
 
 
     def addBook(self):
-        EasyDialog.__init__(self, title= "Add Book")
-        body(self)
-        inputPanel = self.addPanel(self, row = 0, column = 0)
-        inputPanel.authorLabel = inputPanel.addLabel(self, text = "Author: ", row = 0, column = 0)
-        inputPanel.titleLabel = inputPanel.addLabel(self, text = "Title: ", row = 1, column = 0)
-        inputPanel.authorField = inputPanel.addTextField(self, text = "", row = 0, column = 1)
-        inputPanel.titleField = inputPanel.addTextField(self, text = "", row = 1, column = 1)
-        buttonPanel = self.addPanel(self, row = 1, column = 0)
-        buttonPanel.apply()
-        buttonPanel.cancelButton = buttonPanel.addButton(self, text = "Cancel", row = 0, column = 1)
+        addbookDialog(self,"Add Book")
+
 
     def rateBook(self):
-        EasyDialog.__init__(self, title = "Rate Book")
-        body(self)
-        listPanel = self.addPanel(self, row = 0, column = 0)
-        listPanel.addListbox(self, row = 0, column = 0)
-        listPanel.addListbox(self, row = 0, column = 2, width = 20)
-        ratePanel = self.addPanel(self, row = 1, column = 0)
-        ratePanel.addLabel(self, text = "Enter Rating", row = 0, column = 0)
-        ratePanel.addIntegerField(self, value = 0, row = 0, column = 1)
-        buttonPanel = self.addPanel(self, row = 2, column = 0)
-        buttonPanel.apply()
-        buttonPanel.cancelButton = buttonPanel.addButton(self, text="Cancel", row=0, column=1)
+        ratebookDialog(self, "Rate Book")
 
+    def removeReader(self):
+        rmv = self.prompterBox(title= "Remove Reader", promptString= "Readers Name: ")
+
+    def recommend(self):
+        recommendDialog(self, "Readers")
+
+    def report(self):
+        reportDialog(self, "Report")
+
+class addbookDialog(EasyDialog):
+    def __init__(self, parent,title):
+        super().__init__(parent, title)
+
+        def body(self,master):
+            self.addLabel(master, text = "Author:", row = 0, column = 0)
+            self.addLabel(master, text = "Title:", row = 1, column = 0)
+            self.addTextField(master, text = '', row = 0, column = 1)
+            self.addTextField(master, text = '', row = 1, column = 1)
+            self.apply()
+
+class ratebookDialog(EasyDialog):
+    def __init__(self,parent,title):
+        super().__init__(parent,title)
+
+        def body(self,parent):
+            listPanel = self.addPanel(parent, row=0, column=0)
+            listPanel.addListbox(parent, row=0, column=0)
+            listPanel.addListbox(parent, row=0, column=2, width=20)
+            ratePanel = self.addPanel(parent, row=1, column=0)
+            ratePanel.addLabel(parent, text="Enter Rating", row=0, column=0)
+            ratePanel.addIntegerField(parent, value=0, row=0, column=1)
+            self.apply(parent)
+
+class recommendDialog(EasyDialog):
+    def __init__(self, parent, title):
+        super().__init__(parent, title)
+
+        def body(self, parent):
+            self.addMenuBar(parent, row = 0, column = 0, columnspan= 4)
+        def apply(self):
+            pass
+
+class reportDialog(EasyDialog):
+    def __init__(self, parent, title):
+        super(reportDialog, self).__init__(parent, title)
+
+        def body(self, parent):
+            self.addTextArea(parent, text = "Your Text Here", row = 0, column = 0)
+        def apply(self):
+            pass
 
 def main():
     BookRecommendation().mainloop()
