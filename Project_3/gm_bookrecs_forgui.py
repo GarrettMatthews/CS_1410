@@ -7,48 +7,61 @@
 
 # Read booklist.txt as a list of tuples (author name, title)
 
-book = open('booklist.txt', 'r')
+def names():
+    # Read ratings into dictionary keyed by name, lowercase, preserving original order
+    rate = open("ratings.txt", 'r')
+    # Changing the names to lowercase
+    rating_total = []
+    for line in rate:
+        for words in line.split(','):
+            rating_total.append(words.lower())
+    # Making lists of just names, removing '\n', and a list of the ratings
+    rating_name = rating_total[0::2]
+    rating_name = [x.replace('\n', '') for x in rating_name]
+    return rating_name
 
-books = []
-for line in book:
-    books.append(tuple(line.split(',')))
-# Remove '\n' from each tuple, and remake into tuple
-q = 0
-for i in books:
-    for z in i:
-        temp = [x.replace('\n','') for x in i]
-        books[q] = temp
-    q += 1
+def ratings():
+    # Read ratings into dictionary keyed by name, lowercase, preserving original order
+    rate = open("ratings.txt", 'r')
+    # Changing the names to lowercase
+    rating_total = []
+    for line in rate:
+        for words in line.split(','):
+            rating_total.append(words.lower())
+    rating_value = rating_total[1::2]
 
-books = [tuple(r) for r in books]
+    # Changing the list of scores into a nested list of integers for convenience
+    scores = []
 
-# Read ratings into dictionary keyed by name, lowercase, preserving original order
-rate = open("ratings.txt",'r')
-# Changing the names to lowercase
-rating_total = []
-for line in rate:
-    for words in line.split(','):
-        rating_total.append(words.lower())
+    for i in range(len(rating_value)):
+        sc_str = str(rating_value[i])
+        scores.append(sc_str.split())
+    for i in scores:
+        for numb in range(len(i)):
+            i[numb] = int(i[numb])
+    return scores
 
-# Making lists of just names, removing '\n', and a list of the ratings
-rating_name = rating_total[0::2]
-rating_name = [x.replace('\n','') for x in rating_name]
-rating_value = rating_total[1::2]
+def bookdict(rating_name = names(),scores = ratings()):
+    """Assembles the book list/rating dictionary"""
+    # Combining the lists into a dictionary
+    ratings = dict(zip(rating_name,scores))
+    return ratings
 
-# Changing the list of scores into a nested list of integers for convenience
-scores = []
+def booktup():
+    book = open('booklist.txt', 'r')
 
-for i in range(len(rating_value)):
-    sc_str = str(rating_value[i])
-    scores.append(sc_str.split())
-for i in scores:
-    for numb in range(len(i)):
-        i[numb] = int(i[numb])
-
-# Combining the lists into a dictionary
-ratings = {}
-ratings = dict(zip(rating_name,scores))
-
+    books = []
+    for line in book:
+        books.append(tuple(line.split(',')))
+    # Remove '\n' from each tuple, and remake into tuple
+    q = 0
+    for i in books:
+        for z in i:
+            temp = [x.replace('\n', '') for x in i]
+            books[q] = temp
+        q += 1
+    books = [tuple(r) for r in books]
+    return books
 
 # Write a function dotprod(x,y)
 
@@ -72,17 +85,17 @@ def sim_score(dict):
     # Finding dot product for each set of scores
     result = {}
     for key1 in dict:
-        temp = {}
+        temp={}
         for key2 in dict:
             if key1 != key2:
-                ans = dotprod(dict[key1],dict[key2])
+                ans =(dotprod(dict[key1], dict[key2]))
                 temp[key2] = ans
                 result[key1] = temp
     return result
 
 # Write friends using heapq.nlargest so you don't have to sort the whole thing
 
-def friends(name, dict, nfriends = 2):
+def friends(name, dict = bookdict(), nfriends = 2):
     """Finds a number of friends n that have the greatest similarity to name, using a dictionary. Defaults to two"""
     from heapq import nlargest
     from operator import itemgetter
@@ -99,7 +112,7 @@ def friends(name, dict, nfriends = 2):
 
 # Write recommend, calling friends
 
-def recommend(name, dict, nfriends = 2):
+def recommend(name, dict = bookdict(), books = booktup() , nfriends = 2):
     """Recommend books from number of friends n that have similar taste"""
     rec = friends(name, dict, nfriends)
     list = []
@@ -119,13 +132,18 @@ def recommend(name, dict, nfriends = 2):
 
 def main():
     """This function compiles the book recommendation report, based on readers who have similar interests"""
+    name = names()
+    scores = ratings()
+    rating = bookdict(name,scores)
+    books = booktup()
     with open('recommendations.txt', 'w') as rcm:
-        for key in ratings:
-            friend = friends(key,ratings)
-            recom = recommend(key,ratings)
+        for key in rating:
+            friend = friends(key,rating)
+            recom = recommend(key,rating,books)
             rcm.write("{}{}{}".format(key,':',friend) + '\n')
             for i in recom:
                 rcm.write("{}{}{}".format('\t',i,'\n'))
 
 
-main()
+#main()
+
