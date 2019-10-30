@@ -1,0 +1,29 @@
+p = Payroll()
+    p.load_employees()
+    p.process_timecards()
+    p.process_receipts()
+    p.run_payroll()
+    # Save copy of payroll file
+    shutil.copyfile('paylog.txt','paylog1.txt')
+    # Change Karina Gay to Salaried and DirectMethod by changing her Employee object:
+    emp = p.find_employee_by_id('688997')
+    p.make_salaried(45884.99,emp)
+    p.direct_method('30417353-K','465794-3611',emp)
+    # Change TaShya Snow to Commissioned and MailMethod; add some receipts
+    emp = p.find_employee_by_id('522759')
+    p.make_commissioned(50005.50,25,emp)
+    p.mail_method("2624 Hendreit St.","College","AK","99789",emp)
+    clas = emp
+    p.add_receipt(1109.73,clas)
+    p.add_receipt(746.10,clas)
+    # Change Rooney Alvarado to Hourly; add some hour entries
+    emp = p.find_employee_by_id('165966')
+    p.make_hourly(21.53,emp)
+    clas = emp
+    p.add_timecard(8.0,clas)
+    p.add_timecard(8.0,clas)
+    p.add_timecard(8.0,clas)
+    p.add_timecard(8.0,clas)
+    p.add_timecard(8.0,clas)
+    # Rerun payroll
+    p.run_payroll()
