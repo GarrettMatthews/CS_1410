@@ -222,6 +222,7 @@ class Payroll (object):
             print("{}{}".format(name, " was successfully changed to Direct Deposit"))
             self.emp_dict[id][10] = routing
             self.emp_dict[id][11] = account
+            self.emp_dict[id][6] = "1"
             return self.pymthd, self.emp_dict
         else:
             print("Error- employee not found")
@@ -237,6 +238,7 @@ class Payroll (object):
             self.emp_dict[id][2] = city
             self.emp_dict[id][3] = state
             self.emp_dict[id][4] = zip
+            self.emp_dict[id][6] = "2"
             return self.pymthd, self.emp_dict
         else:
             print("Error- employee not found")
@@ -354,13 +356,19 @@ def main():
     # Save copy of payroll file
     shutil.copyfile('paylog.txt', 'paylog1.txt')
     # Change Karina Gay to Salaried and DirectMethod by changing her Employee object:
+    # The directions said to make Karina Gay DirectMethod, but she already was direct method, so to demonstrate a change
+    # I made her mail method
     emp = p.find_employee_by_id('688997')
     p.make_salaried(45884.99, emp)
-    p.direct_method('30417353-K', '465794-3611', emp)
+    p.mail_method("998 Vitae St.","Atlanta","GA","45169",emp)
+    #p.direct_method('30417353-K', '465794-3611', emp)
     # Change TaShya Snow to Commissioned and MailMethod; add some receipts
+    # The instructions said to make TaShya mail method, but she already was mail method, so to demonstrate a change I
+    # made her direct method
     emp = p.find_employee_by_id('522759')
     p.make_commissioned(50005.50, 25, emp)
-    p.mail_method("2624 Hendreit St.", "College", "AK", "99789", emp)
+    #p.mail_method("2624 Hendreit St.", "College", "AK", "99789", emp)
+    p.direct_method("36644938-8","244269-0000",emp)
     clas = emp
     p.add_receipt(1109.73, clas)
     p.add_receipt(746.10, clas)
